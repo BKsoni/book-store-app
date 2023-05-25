@@ -1,29 +1,29 @@
 import './App.css';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
-import { Product } from './components/Product';
-import User from './components/User';
+import { ThemeProvider } from '@material-ui/core';
+import RegistrationForm from './components/register/RegistrationForm';
+import LoginForm from './components/login/LoginForm';
+import { customTheme } from './assets/CustomTheme';
+import { nav } from './assets/Navigations'
 
 function App() {
-  var pname = "Laptop";
-  var price = 50000;
-  var uname = "BhavyaS";
-  var pwd = "12345678";
-  // const addUser = () => {alert("addUser Function invoked!")}
-  // const addProduct = () => {alert("addProduct Function invoked!")}
+
   return (
     <>
+    <ThemeProvider theme={customTheme}>
     <BrowserRouter>
       <div className="header">
         <NavLink to="/" className="nav-link">Home</NavLink>
-        <NavLink to="/product" className="nav-link">Product</NavLink>
-        <NavLink to="/user" className="nav-link">User</NavLink>
+        <NavLink to={nav.Login} className="nav-link">Login</NavLink>
+        <NavLink to={nav.Register} className="nav-link">Register</NavLink>
       </div>
           <Routes>
             <Route path="/" element={<h2 className='container'>Welcome to HomePage</h2>}/>
-            <Route path="/product" element={<Product name={pname} price={price}/>}/>
-            <Route path="/user" element={<User name={uname} pass={pwd}/>}/>
+            <Route path={nav.Login} element={<LoginForm/>}/>
+            <Route path={nav.Register} element={<RegistrationForm/>}/>
           </Routes>
       </BrowserRouter>
+      </ThemeProvider>
       </>
   );
 }
