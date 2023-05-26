@@ -13,7 +13,7 @@ function App() {
     <ThemeProvider theme={customTheme}>
     <BrowserRouter>
       <div className="header">
-        <NavLink to="/" className="nav-link">Home</NavLink>
+        {/* <NavLink to="/" className="nav-link">Home</NavLink> */}
         <NavLink to={nav.Login} className="nav-link">Login</NavLink>
         <NavLink to={nav.Register} className="nav-link">Register</NavLink>
       </div>

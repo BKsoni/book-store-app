@@ -39,7 +39,7 @@ const saveData = async (values, action) => {
   console.log(data);
   try {
     const response = await axios.post(END_POINT, data);
-    console.log(response);
+    //console.log(response.data);
     if (response.data.code === 200) {
       toast.success("Registration Success!");
     }
@@ -62,7 +62,7 @@ const RegistrationForm = () => {
     });
 
   return (
-    <Box className="container">
+    <>
       <ToastContainer />
       <form className={classes.form}>
         {errors.fname && touched.fname ? (
@@ -152,7 +152,7 @@ const RegistrationForm = () => {
           Register
         </Button>
       </form>
-    </Box>
+      </>
   );
 };
 

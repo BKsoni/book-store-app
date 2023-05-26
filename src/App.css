@@ -63,16 +63,3 @@
   border-bottom: 1px solid #e5e5e5;
   margin: 1rem 0 1rem 0;
 }
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-color:beige;
-  width: 20%; 
-  margin:auto;
-  padding: 50px;
-  border: 2px solid #ff0000;
-  border-radius: 2rem;
-}
