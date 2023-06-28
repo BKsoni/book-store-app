@@ -1,18 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Button,
-  Box,
   Select,
   MenuItem,
   InputLabel,
+  FormControl,
+  Typography,
 } from "@material-ui/core";
 import { useFormik } from "formik";
 import { registrationSchema } from "../../schemas";
 import axios from "../../api/axios";
-import { useStyles } from "./Style";
-import { ToastContainer, toast } from "react-toastify";
+import { useStyles } from "../../assets/Style";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import { nav } from "../../assets/RoutePaths";
+import loadingGif from "../../assets/loading.gif";
 
 const END_POINT = "/api/user";
 
@@ -25,10 +29,7 @@ const initialValues = {
   confirmPassword: "",
 };
 
-const saveData = async (values, action) => {
-  //alert("Registration success! Welcome "+values.fname);
-  //console.log(values);
-
+const saveData = async (values, action, navigate, setIsLoading) => {
   const data = {
     firstName: values.fname,
     lastName: values.lname,
@@ -42,6 +43,8 @@ const saveData = async (values, action) => {
     //console.log(response.data);
     if (response.data.code === 200) {
       toast.success("Registration Success!");
+      setIsLoading(true);
+      navigate(nav.Login); // Redirect to the login page after successful register
     }
     action.setSubmitting(false);
     action.setStatus(response.data.message);
@@ -52,107 +55,126 @@ const saveData = async (values, action) => {
 };
 
 const RegistrationForm = () => {
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const classes = useStyles();
-
+  const navigate = useNavigate();
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: initialValues,
       validationSchema: registrationSchema,
-      onSubmit: saveData,
+      onSubmit: (values, action) => saveData(values, action, navigate, setIsLoading),
     });
 
   return (
-    <>
-      <ToastContainer />
-      <form className={classes.form}>
-        {errors.fname && touched.fname ? (
-          <span className={classes.errorSpan}>{errors.fname}</span>
-        ) : null}
-        <TextField
-          label="First name"
-          name="fname"
-          variant="outlined"
-          className={classes.textField}
-          value={values.fname}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-        {errors.lname && touched.lname ? (
-          <span className={classes.errorSpan}>{errors.lname}</span>
-        ) : null}
-        <TextField
-          label="Last name"
-          name="lname"
-          variant="outlined"
-          className={classes.textField}
-          value={values.lname}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-        {errors.email && touched.email ? (
-          <span className={classes.errorSpan}>{errors.email}</span>
-        ) : null}
-        <TextField
-          label="Email"
-          name="email"
-          type="email"
-          variant="outlined"
-          className={classes.textField}
-          value={values.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-        {errors.role && touched.role ? (
-          <span className={classes.errorSpan}>{errors.role}</span>
-        ) : null}
-        <InputLabel id="select-role">Role</InputLabel>
+    <form className={classes.form}>
+     <Typography variant="h4" gutterBottom>
+        Registration
+      </Typography>
+      {errors.fname && touched.fname ? (
+        <span className={classes.errorSpan}>{errors.fname}</span>
+      ) : null}
+      <TextField
+        label="First name"
+        name="fname"
+        variant="outlined"
+        className={classes.textField}
+        value={values.fname}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+      {errors.lname && touched.lname ? (
+        <span className={classes.errorSpan}>{errors.lname}</span>
+      ) : null}
+      <TextField
+        label="Last name"
+        name="lname"
+        variant="outlined"
+        className={classes.textField}
+        value={values.lname}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+      {errors.email && touched.email ? (
+        <span className={classes.errorSpan}>{errors.email}</span>
+      ) : null}
+      <TextField
+        label="Email"
+        name="email"
+        type="email"
+        variant="outlined"
+        className={classes.textField}
+        value={values.email}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+      {errors.role && touched.role ? (
+        <span className={classes.errorSpan}>{errors.role}</span>
+      ) : null}
+      <FormControl fullWidth className={classes.textField}>
+        <InputLabel id="select-role" className={classes.label}>
+          &nbsp;&nbsp;&nbsp;Role
+        </InputLabel>
         <Select
-          label="Role"
           labelId="select-role"
           name="role"
-          value={values.roleId}
+          value={values.role}
           onChange={handleChange}
           onBlur={handleBlur}
+          variant="outlined"
         >
-          <MenuItem value={1}>Seller</MenuItem>
-          <MenuItem value={2}>Buyer</MenuItem>
+          <MenuItem value={2} className={classes.menuItem}>
+            Seller
+          </MenuItem>
+          <MenuItem value={3} className={classes.menuItem}>
+            Buyer
+          </MenuItem>
         </Select>
-        {errors.password && touched.password ? (
-          <span className={classes.errorSpan}>{errors.password}</span>
-        ) : null}
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          variant="outlined"
-          className={classes.textField}
-          value={values.password}
-          onChange={handleChange}
-          onBlur={handleBlur}
+      </FormControl>
+      {errors.password && touched.password ? (
+        <span className={classes.errorSpan}>{errors.password}</span>
+      ) : null}
+      <TextField
+        label="Password"
+        name="password"
+        type="password"
+        variant="outlined"
+        className={classes.textField}
+        value={values.password}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+      {errors.confirmPassword && touched.confirmPassword ? (
+        <span className={classes.errorSpan}>{errors.confirmPassword}</span>
+      ) : null}
+      <TextField
+        label="Confirm Password"
+        name="confirmPassword"
+        type="password"
+        variant="outlined"
+        className={classes.textField}
+        value={values.confirmPassword}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.submitButton}
+        onClick={handleSubmit}
+      >
+        Register
+      </Button>
+
+      {/* Loading GIF */}
+      {isLoading && (
+        <img
+          src={loadingGif}
+          alt="Loading"
+          style={{ display: "block", margin: "auto", width: "50px" }}
         />
-        {errors.confirmPassword && touched.confirmPassword ? (
-          <span className={classes.errorSpan}>{errors.confirmPassword}</span>
-        ) : null}
-        <TextField
-          label="Confirm Password"
-          name="confirmPassword"
-          type="password"
-          variant="outlined"
-          className={classes.textField}
-          value={values.confirmPassword}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          className={classes.submitButton}
-          onClick={handleSubmit}
-        >
-          Register
-        </Button>
-      </form>
-      </>
+      )}
+
+    </form>
   );
 };
 
